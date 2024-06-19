@@ -25,3 +25,4 @@ public interface ItemRepository extends JpaRepository<Item, Long>,
     List<Item> findByItemDetailByNative(@Param("itemDetail") String itemDeatail);
 
 }
+
