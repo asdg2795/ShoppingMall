@@ -1,0 +1,38 @@
+# ?????? ?? ??
+server:
+  port: 8080
+
+# MySQL ?? ??
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/shop?serverTimezone=UTC
+    username: root
+    password: tiger1234
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+# ???? ?? ?? ??
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+
+
+# LiveReload
+  devtools:
+    livereload: enabled=true
+
+#Thymeleaf cache 사용 중지
+  thymeleaf:
+    cache: false
