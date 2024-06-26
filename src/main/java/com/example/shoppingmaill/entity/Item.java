@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Table(name = "item")
@@ -23,7 +21,7 @@ public class Item extends BaseEntity{
     @Column(nullable = false, length = 50)
     private String itemNm;                      // 상품명
 
-    @Column(name = "price", nullable = false)
+    @Column(nullable = false)
     private int price;                          // 상품 가격
 
     @Column(nullable = false)
