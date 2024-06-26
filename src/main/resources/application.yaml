@@ -1,7 +1,6 @@
 # ?????? ?? ??
 server:
   port: 8080
-
 # MySQL ?? ??
 spring:
   datasource:
@@ -19,6 +18,13 @@ spring:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.MySQLDialect
 
+# 파일 한 개당 최대 사이즈
+    servlet:
+      multipart:
+        maxFileSize: 20MB
+        maxRequestSize: 100MB # 요청 당 최대 파일 크기
+
+
 # ???? ?? ?? ??
 logging:
   level:
@@ -33,6 +39,12 @@ logging:
   devtools:
     livereload: enabled=true
 
-#Thymeleaf cache 사용 중지
+# Thymeleaf cache 사용 중지
   thymeleaf:
     cache: false
+
+# 상품 이미지 업로드 경로
+itemImgLocation: C:/mangez_js/study/item
+
+# 리소스 업로드 경로
+uploadPath: file:/C:/mangez_js/study
