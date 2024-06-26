@@ -28,7 +28,7 @@ public class ItemController {
         return "item/itemForm";
     }
 
-    // 상품 등록
+    // 상품 등록(상품 정보 및 이미지 입력하고 저장)
     @PostMapping(value = "/admin/item/new")
     public String itemNew(@Valid @ModelAttribute("ItemFormDto") ItemFormDto itemFormDto,
                           BindingResult bindingResult,

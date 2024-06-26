@@ -19,10 +19,10 @@ public class ItemService {
     private final ItemImgService itemImgService; // 상품 이미지 저장
 
     public Long saveItem(ItemFormDto itemFormDto,
-                         List<MultipartFile> itemImgFileList) throws Exception {
+                         List<MultipartFile> itemImgFileList) throws Exception { // 파라미터는 입력받은 itemFormDto 객체와 이미지 정보를 담고 있는 itemImgFileList를 넘김
         // 상품 등록
         Item item = itemFormDto.createItem();
-        itemRepository.save(item);
+        itemRepository.save(item);// itemFormDto 객체를 item 엔티티로 변환하고 메소드 수행
 
         // 이미지 등록
         for(int i = 0; i < itemImgFileList.size(); i++){
@@ -34,6 +34,9 @@ public class ItemService {
                 itemImg.setRepImgYn("N");
             }
             itemImgService.saveItemImg(itemImg, itemImgFileList.get(i));
+            // itemImg 객체를 생성하고 itemImgService.saveItemImg() 메소드 수행
+            // 파라미터는 itemImg 객체와 이미지 정보를 담고 있는 itemImgFileList.get(i) 객체 하나를 지정
+            // ㅑ
         }
         return item.getId();
     }

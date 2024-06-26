@@ -35,5 +35,6 @@ public class ItemImgService {// 상품 이미지 업로드, 상품 이미지 정
         // 상품 이미지 정보 저장
         itemImg.updateItemImg(oriImgName, imgName, imgUrl);
         itemImgRepository.save(itemImg);
+        // 메소드 수행
     }
 }

@@ -15,9 +15,12 @@ import java.util.UUID;
 @Service
 @Log
 public class FileService {
+    // 상품 이미지가 존재한다면 fileService.uploadFile() 메소드 수행
+    // 이때 파라미터는 "저장위치", "원래 파일명", 이미지 Byte 파일"
     public String uploadFile(String uploadPath, String originalFileName,
                              byte[] fileData) throws IOException{
         // UUID를 이용하여 파일명 새로 생성
+        // FileOutputStream을 이용하여 저장
         UUID uuid = UUID.randomUUID();
         String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String savedFileName = uuid.toString() + extension; // 파일명
