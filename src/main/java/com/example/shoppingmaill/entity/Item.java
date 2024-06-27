@@ -1,6 +1,7 @@
 package com.example.shoppingmaill.entity;
 
 import com.example.shoppingmaill.constant.ItemSellStatus;
+import com.example.shoppingmaill.dto.ItemFormDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,5 +34,16 @@ public class Item extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     private ItemSellStatus itemSellStatus;      // 상품 판매 상태
+
+
+    // 엔티티 클래스에 로직을 추가한다면 좀 더 객체지향적이고 코드 재활용이 가능
+    // 변경 포인트를 한군데에서 관리할 수 있음
+    public void updateItem(ItemFormDto itemFormDto){
+        this.itemNm = itemFormDto.getItemNm();
+        this.price = itemFormDto.getPrice();
+        this.stockNumber = itemFormDto.getStockNumber();
+        this.itemDetail = itemFormDto.getItemDetail();
+        this.itemSellStatus = itemFormDto.getItemSellStatus();
+    }
 }
 

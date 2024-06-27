@@ -3,6 +3,7 @@ package com.example.shoppingmaill.service;
 import ch.qos.logback.core.util.StringUtil;
 import com.example.shoppingmaill.entity.ItemImg;
 import com.example.shoppingmaill.repository.ItemImgRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,4 +38,24 @@ public class ItemImgService {// 상품 이미지 업로드, 상품 이미지 정
         itemImgRepository.save(itemImg);
         // 메소드 수행
     }
+
+    public void updateItemImg(Long itemImgId, MultipartFile itemImgFile) throws Exception{
+        // 상품 이미지를 수정했다면, 기존의 이미지 정보 객체를 불러옴
+        if(!itemImgFile.isEmpty()){
+            ItemImg savedImgItem = itemImgRepository.findById(itemImgId)
+                    .orElseThrow(EntityNotFoundException::new);
+            // 기존 이미지 파일이 존재한다면 삭제 (존재하지 않는다면 이미지를 추가한 것)
+            if(!StringUtils.isEmpty(savedImgItem.getImgName())){
+                fileService.deleteFile(itemImgLocation+"/"+savedImgItem.getImgName());
+            }
+
+            String oriImgName = itemImgFile.getOriginalFilename();
+            String imgName = fileService.uploadFile(itemImgLocation,
+                    oriImgName,itemImgFile.getBytes());
+            String imgUrl = "/images/item/" + imgName;
+            savedImgItem.updateItemImg(oriImgName,imgName,imgUrl);
+            // 수정⑧ 기존 이미지 파일 삭제 후 savedItemImg.updateItemImg() 수행
+        }
+    }
 }
+

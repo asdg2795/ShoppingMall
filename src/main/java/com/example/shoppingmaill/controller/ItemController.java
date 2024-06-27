@@ -2,15 +2,13 @@ package com.example.shoppingmaill.controller;
 
 import com.example.shoppingmaill.dto.ItemFormDto;
 import com.example.shoppingmaill.service.ItemService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -52,6 +50,51 @@ public class ItemController {
                     "상품 등록 중 에러가 발생하였습니다.");
             return "item/itemForm";
         }
+        return "redirect:/";
+    }
+
+    // 상품 수정
+    // 수정① "ADMIN" 권한을 가진 아이디로 상품 수정 페이지 GET 요청
+    @GetMapping(value = "/admin/item/{itemId}")
+    public String itemDetail(@PathVariable(name = "itemId") Long itemId, Model model){
+
+        try{
+            ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
+            // 수정② 수행하여 해당 상품 조회
+            model.addAttribute("ItemFormDto", itemFormDto);
+            // 수정③ 상품 수정 페이지 반환하면서 해당 상품 DTO 객체로 넘김
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("errorMessage", "존재하지 않는 상품입니다.");
+            model.addAttribute("itemFormDto", new ItemFormDto());
+            return "item/itemForm";
+        }
+        return "item/itemForm";
+    }
+
+    // 수정④ 상품 수정 페이지에서 수정한 후 "수정" (POST 요청)
+    @PostMapping(value = "/admin/item/{itemId}")
+    public String itemUpdate(@Valid ItemFormDto itemFormDto, BindingResult bindingResult, Model model,
+                             @RequestParam(name = "itemImgFile") List<MultipartFile> itemImgFileList) {
+
+        if (bindingResult.hasErrors()) {
+            return "item/itemForm";
+        }
+
+        if (itemImgFileList.get(0).isEmpty() && itemFormDto.getId() == null) {
+            model.addAttribute("errorMessage",
+                    "첫번째 심플 이미지는 필수 입력 값 입니다.");
+            return "item/itemForm";
+        }
+
+        try {
+            itemService.updateItem(itemFormDto, itemImgFileList);
+            // 수정⑤ 입력값을 검증하고 itemService.updateItem() 메소드를 수행
+            // 파라미터는 입력받은 ItemFormDto 객체와 이미지 정보를 담고있는 itemImgFileList를 넘김
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "상품 수정 중 에러가 발생하였습니다.");
+            return "item/itemForm";
+        }
+
         return "redirect:/";
     }
 }
