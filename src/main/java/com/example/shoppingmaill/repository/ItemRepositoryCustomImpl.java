@@ -2,8 +2,11 @@ package com.example.shoppingmaill.repository;
 
 import com.example.shoppingmaill.constant.ItemSellStatus;
 import com.example.shoppingmaill.dto.ItemSearchDto;
+import com.example.shoppingmaill.dto.MainItemDto;
+import com.example.shoppingmaill.dto.QMainItemDto;
 import com.example.shoppingmaill.entity.Item;
 import com.example.shoppingmaill.entity.QItem;
+import com.example.shoppingmaill.entity.QItemImg;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -84,6 +87,44 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
         // 조회 대상 리스트의 개수(count)
         long total = results.getTotal();
 
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    // 검색어가 포함된 상품 조회 조건 BooleanExpression
+    private BooleanExpression itemNmLike(String searchQuery) {
+        return StringUtils.isEmpty(searchQuery) ? null
+                : QItem.item.itemNm.like("%" + searchQuery + "%");
+    }
+
+    @Override
+    public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
+        QItem item = QItem.item;
+        QItemImg itemImg = QItemImg.itemImg;
+        QueryResults<MainItemDto> results = queryFactory
+                // MainItemDto 객체를 반환
+                // 멤버변수 초기화는 조회된 결과값에서 MainItemDto 객체 생성자를 통해 지정
+                // 즉, db 조회 결과는 itemImg-item 조인된 결과가 반환되지만 그 중 일부만 사용
+                .select(
+                        new QMainItemDto(
+                                item.id,
+                                item.itemNm,
+                                item.itemDetail,
+                                itemImg.imgUrl,
+                                item.price)
+                )
+                .from(itemImg)
+                // itemImg 테이블의 item 필드가 참조하는 item 테이블 조인
+                .join(itemImg.item, item)
+                // 5개의 이미지 중에서 대표 사진만을 조회
+                .where(itemImg.repImgYn.eq("Y"))
+                .where(itemNmLike(itemSearchDto.getSearchQuery()))
+                .orderBy(item.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        List<MainItemDto> content = results.getResults();
+        long total = results.getTotal();
         return new PageImpl<>(content, pageable, total);
     }
 }
