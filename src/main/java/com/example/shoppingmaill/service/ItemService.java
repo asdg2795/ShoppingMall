@@ -3,6 +3,7 @@ package com.example.shoppingmaill.service;
 import com.example.shoppingmaill.dto.ItemFormDto;
 import com.example.shoppingmaill.dto.ItemImgDto;
 import com.example.shoppingmaill.dto.ItemSearchDto;
+import com.example.shoppingmaill.dto.MainItemDto;
 import com.example.shoppingmaill.entity.Item;
 import com.example.shoppingmaill.entity.ItemImg;
 import com.example.shoppingmaill.repository.ItemImgRepository;
@@ -98,5 +99,11 @@ public class ItemService {
     @Transactional(readOnly = true)
     public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
         return itemRepository.getAdminItemPage(itemSearchDto, pageable);
+    }
+
+    // 메인 화면
+    @Transactional(readOnly = true)
+    public Page<MainItemDto> getMainItemDto(ItemSearchDto itemSearchDto, Pageable pageable){
+        return itemRepository.getMainItemPage(itemSearchDto, pageable);
     }
 }
