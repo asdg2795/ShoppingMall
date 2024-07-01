@@ -2,12 +2,15 @@ package com.example.shoppingmaill.service;
 
 import com.example.shoppingmaill.dto.ItemFormDto;
 import com.example.shoppingmaill.dto.ItemImgDto;
+import com.example.shoppingmaill.dto.ItemSearchDto;
 import com.example.shoppingmaill.entity.Item;
 import com.example.shoppingmaill.entity.ItemImg;
 import com.example.shoppingmaill.repository.ItemImgRepository;
 import com.example.shoppingmaill.repository.ItemRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -89,5 +92,11 @@ public class ItemService {
            // 수정⑦ 메소드 수행, 이때) 파라미터는 "상품 이미지의 id", "상품 이미지 파일"
        }
        return item.getId();
+    }
+
+    // 조회 기능
+    @Transactional(readOnly = true)
+    public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
+        return itemRepository.getAdminItemPage(itemSearchDto, pageable);
     }
 }
