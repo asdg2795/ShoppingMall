@@ -1,10 +1,15 @@
 package com.example.shoppingmaill.controller;
 
 import com.example.shoppingmaill.dto.ItemFormDto;
+import com.example.shoppingmaill.dto.ItemSearchDto;
+import com.example.shoppingmaill.entity.Item;
 import com.example.shoppingmaill.service.ItemService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -96,5 +102,21 @@ public class ItemController {
         }
 
         return "redirect:/";
+    }
+
+    // 요청 URL에 페이지 번호가 없는 경우와 있는 경우 2가지를 매핑
+    @GetMapping(value = {"/admin/items", "/admin/items/{page}"})
+    public String itemManage(ItemSearchDto itemSearchDto,
+                             @PathVariable("page") Optional<Integer> page,
+                             Model model){
+        // PageRequest.of() 를 통해서 Pageable 객체 생성
+        // 첫번째 파라미터는 조회할 페이지 번호, 두번째는 한 번에 가져올 데이터 수
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 3);
+        Page<Item> items = itemService.getAdminItemPage(itemSearchDto, pageable);
+        model.addAttribute("items", items);
+        model.addAttribute("itemSearchDto", itemSearchDto);
+        // View 단에서 하단에 보여줄 페이지 번호의 최대 개수 설정
+        model.addAttribute("maxPage", 5);
+        return "item/itemMng";
     }
 }
