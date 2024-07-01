@@ -47,4 +47,5 @@ logging:
 itemImgLocation: C:/mangez_js/study/item
 
 # 리소스 업로드 경로
-uploadPath: file:/C:/mangez_js/study
+uploadPath: file:///C:/mangez_js/study/
+
