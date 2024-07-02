@@ -119,4 +119,11 @@ public class ItemController {
         model.addAttribute("maxPage", 5);
         return "item/itemMng";
     }
+
+    @GetMapping(value = "/item/{itemId}")
+    public String itemDetail(Model model, @PathVariable(name = "itemId") Long itemId){
+        ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
+        model.addAttribute("Item", itemFormDto);
+        return "item/itemDetail";
+    }
 }
