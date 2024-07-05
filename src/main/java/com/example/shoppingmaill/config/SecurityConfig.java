@@ -29,7 +29,6 @@ public class SecurityConfig  {
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
                 .authorizeHttpRequests(authorize -> authorize
-
                         .requestMatchers("/","/member/","/member/login","/member/logout","/member/new","/member/login/fail","/admin/item/new","/admin/item/{itemId}", "/admin/items", "/admin/items/").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()// 모든 요청에 대해 접근을 허용
