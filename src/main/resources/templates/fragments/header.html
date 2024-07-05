@@ -17,13 +17,13 @@
             <a href="admin/item/new" class="nav-link px-2 link-secondary">상품 등록</a>
         </li>
         <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
-            <a href="#" class="nav-link px-2">상품 관리</a>
+            <a href="/admin/items" class="nav-link px-2">상품 관리</a>
         </li>
         <li sec:authorize="isAuthenticated()">
-            <a href="#" class="nav-link px-2">장바구니</a>
+            <a href="/cart" class="nav-link px-2">장바구니</a>
         </li>
         <li sec:authorize="isAuthenticated()">
-            <a href="#" class="nav-link px-2">구매이력</a>
+            <a href="/orders" class="nav-link px-2">구매이력</a>
         </li>
     </ul>
 
