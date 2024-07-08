@@ -1,5 +1,6 @@
 package com.example.shoppingmaill.controller;
 
+import com.example.shoppingmaill.dto.CartDetailDto;
 import com.example.shoppingmaill.dto.CartItemDto;
 import com.example.shoppingmaill.service.CartService;
 import jakarta.validation.Valid;
@@ -7,8 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,7 +22,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class CartController {
-    private CartService cartService;
+    private final CartService cartService;
 
     @PostMapping(value = "/cart")
     @ResponseBody
@@ -43,5 +46,12 @@ public class CartController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<Long>(cartItemId, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/cart")
+    public String orderHist(Principal principal, Model model) {
+        List<CartDetailDto> cartDetailDtoList = cartService.getCartList(principal.getName());
+        model.addAttribute("cartItems", cartDetailDtoList);
+        return "cart/cartList";
     }
 }
