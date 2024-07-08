@@ -1,6 +1,7 @@
 package com.example.shoppingmaill.service;
 
 import com.example.shoppingmaill.constant.ItemSellStatus;
+import com.example.shoppingmaill.constant.OrderStatus;
 import com.example.shoppingmaill.dto.OrderDto;
 import com.example.shoppingmaill.entity.Item;
 import com.example.shoppingmaill.entity.Member;
@@ -80,6 +81,28 @@ class OrderServiceTest {
 
         // 1의 가격과 2가 같은지 테스트
         assertEquals(totalPrice, order.getTotalPrice());
+    }
+
+    @Test
+    @DisplayName("주문 취소 테스트")
+    public void cancelOrder(){
+        Item item = saveItem();
+        Member member = saveMember();
+
+        OrderDto orderDto = new OrderDto();
+        orderDto.setCount(10);
+        orderDto.setItemId(item.getId());
+
+        // 주문 객체 저장
+        Long orderId = orderService.order(orderDto, member.getEmail());
+
+        // 주문된 객체를 조회한 뒤에 주문 취소
+        Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
+        orderService.cancelOrder(orderId);
+
+        // 주문의 상태가 "CANCEL" 이고 처음 수량 100이 맞다면 테스트 통과
+        assertEquals(OrderStatus.CANCEL, order.getOrderStatus());
+        assertEquals(100, item.getStockNumber());
     }
 
 }
