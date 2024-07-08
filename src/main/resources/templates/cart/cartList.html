@@ -11,6 +11,7 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
 
+        // 주문할 상품을 체크하거나 해제할 경우 총 주문 금액을 구하는 함수 및 호출
         $(document).ready(function(){
             $("input[name=cartChkBox]").change( function(){
                 getOrderTotalPrice();
@@ -20,8 +21,10 @@
         //  총 주문 금액 출력
         function getOrderTotalPrice(){
             var orderTotalPrice = 0;
+            // name 속성 값이 cartChkBox 이고 체크된 input 태그에 대해 각각 함수 수행
             $("input[name=cartChkBox]:checked").each(function() {
                 var cartItemId = $(this).val();
+                // id 가 price~ 인 태그를 지정
                 var price = $("#price_" + cartItemId).attr("data-price");
                 var count = $("#count_" + cartItemId).val();
                 orderTotalPrice += price*count;
@@ -31,6 +34,9 @@
         }
 
         // 전체선택 또는 전체해제
+        // checkall 태그의 프로퍼터 값이 checked 라면 cartChkBox 태그를 모두 checked 상태로 변경
+        // checked 가 아니라면 모두 checked 상태를 해제
+        // 마지막에 총 주문 금액을 수정하는 getOrderTotalPrice() 함수 호출
         function checkAll(){
             if($("#checkall").prop("checked")){
                 $("input[name=cartChkBox]").prop("checked",true);
@@ -40,7 +46,13 @@
             getOrderTotalPrice();
         }
 
+        // 자바스크립트 .attr() .prop() 차이
+        // .attr() : HTML의 속성(attribute) 취급
+        // .prop() : JavaScript의 프로퍼티(property)를 취급 (true, false)
+
         // 상품 수량 변경
+        // 수량 부분의 수량을 변겨아면 changeCount() 함수 호출
+        // 변경된 수량을 적용하기 위해 총 주문 금액을 수정하는 getORderTotalPrice() 함수 호출
         function changeCount(obj){
             var count = obj.value;
             var cartItemId = obj.id.split('_')[1];
@@ -53,15 +65,17 @@
 
 
         // 상품 수량 변경 DB 적용을 위해 "/cartItem/{cartItemId}?count=value" 요청
+        // 장바구니에 들어있는 상품의 수량을 변경하면 CartItem 의 count 값도 수정되야 하므로 마지막에 updateCartItemCount() 함수 호출
         function updateCartItemCount(cartItemId, count){
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 
             var url = "/cartItem/" + cartItemId+"?count=" + count;
+            // 상품 Id 값은 PathVariable, 수량(count)은 QueryString
 
             $.ajax({
                 url      : url,
-                type     : "PATCH",
+                type     : "PATCH", // 일부분만 수정하기 위해서 PATCH 방식으로 요청
                 beforeSend : function(xhr){
                     /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
                     xhr.setRequestHeader(header, token);
