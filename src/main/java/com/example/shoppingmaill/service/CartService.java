@@ -1,5 +1,6 @@
 package com.example.shoppingmaill.service;
 
+import com.example.shoppingmaill.dto.CartDetailDto;
 import com.example.shoppingmaill.dto.CartItemDto;
 import com.example.shoppingmaill.entity.Cart;
 import com.example.shoppingmaill.entity.CartItem;
@@ -13,6 +14,9 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -47,4 +51,21 @@ public class CartService {
         }
         return cartItem.getId();
     }
+
+    // Controller 에서 email 값을 전달 받음
+    @Transactional(readOnly = true)
+    public List<CartDetailDto> getCartList(String email){
+        List<CartDetailDto> cartDetailDtoList = new ArrayList<>();
+
+        Member member = memberRepository.findByEmail(email);
+        Cart cart = cartRepository.findByMemberId(member.getId());
+
+        if(cart == null){
+            return cartDetailDtoList;
+        }
+
+        cartDetailDtoList = cartItemRepository.findcartDetailDtoList(cart.getId());
+        return cartDetailDtoList;
+    }
+
 }
