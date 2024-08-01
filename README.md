@@ -30,4 +30,6 @@
 
   -- 프로젝트 API 명세서
   https://docs.google.com/spreadsheets/d/1AJ5cyir0OYHMsDImUxTAlcOVFjibPcDAn4zYqUUEtt0/edit?usp=sharing
+  ![image](https://github.com/user-attachments/assets/9dc9e220-82c5-4140-b467-090c1dab9950)
+
   
