@@ -70,6 +70,7 @@ public class CartController {
     @ResponseBody
     public ResponseEntity deleteCartItem(@PathVariable("cartItemId") Long cartItemId,
                                          Principal principal) {
+        // 상품 삭제 요청을 하는 유저와 해당 장바구니 상품의 유저가 일치하는지 검증
         if(!cartService.validateCartItem(cartItemId, principal.getName())){
             return new ResponseEntity<String>("수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
@@ -81,7 +82,9 @@ public class CartController {
     @PostMapping(value = "/cart/orders")
     @ResponseBody
     public ResponseEntity orderCartItem(@RequestBody CartOrderDto cartOrderDto, Principal principal){
+        // 장바구니 주문 상품이 로그인한 유저의 것이 맞는지 검증
         List<CartOrderDto> cartOrderDtoList = cartOrderDto.getCartOrderDtoList();
+        // CartOrderDto 에서 CartOrderList 를 가져온 뒤
 
         if (cartOrderDtoList == null || cartOrderDtoList.size() == 0) {
             return new ResponseEntity<String>("주문할 상품을 선택해주세요", HttpStatus.BAD_REQUEST);
@@ -95,6 +98,7 @@ public class CartController {
         }
 
         Long orderId = cartService.orderCartItem(cartOrderDtoList, principal.getName());
+        // cartService.orderCartItem() 메소드 수행 ->
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
 }

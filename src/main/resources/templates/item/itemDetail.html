@@ -27,6 +27,8 @@
         }
 
         function order(){
+            // 스프링 시큐리티를 사용할 경우 CSRF 토큰 값을 자동으로 주고 받지만
+            // Ajax 통신할떄는 직접 코드를 구현해서 CSRF 토큰을 보내야함
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 

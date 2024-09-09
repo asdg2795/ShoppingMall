@@ -58,6 +58,8 @@ public class Order extends BaseEntity{
         return totalPrice;
     }
 
+    // 주문 상태를 CANCEL 로 변경
+    // 모든 OrderItem 객체의 cancel() 메소드를 수행
     public void cancelOrder(){
         this.orderStatus = OrderStatus.CANCEL;
 

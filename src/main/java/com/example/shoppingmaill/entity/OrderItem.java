@@ -26,6 +26,7 @@ public class OrderItem extends BaseEntity{
     private int count; // 수량
 
     // OrderItem 객체
+    // 주문 상품과 주문 수량 정보를 가지고 있는 OrderItem Entity 에 객체 생성 메소드 추가
     public static OrderItem createOrderItem(Item item, int count){
         OrderItem orderItem = new OrderItem();
         orderItem.setItem(item);
@@ -40,6 +41,7 @@ public class OrderItem extends BaseEntity{
         return orderPrice * count;
     }
 
+    // 주문 상품 수량을 파라미터로 넘김
     public void cancel(){
         this.getItem().addStock(count);
     }

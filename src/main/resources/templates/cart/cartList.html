@@ -47,12 +47,12 @@
         }
 
         // 자바스크립트 .attr() .prop() 차이
-        // .attr() : HTML의 속성(attribute) 취급
-        // .prop() : JavaScript의 프로퍼티(property)를 취급 (true, false)
+        // .attr() : HTML 의 속성(attribute) 취급
+        // .prop() : JavaScript 의 프로퍼티(property)를 취급 (true, false)
 
         // 상품 수량 변경
         // 수량 부분의 수량을 변겨아면 changeCount() 함수 호출
-        // 변경된 수량을 적용하기 위해 총 주문 금액을 수정하는 getORderTotalPrice() 함수 호출
+        // 변경된 수량을 적용하기 위해 총 주문 금액을 수정하는 getOrderTotalPrice() 함수 호출
         function changeCount(obj){
             var count = obj.value;
             var cartItemId = obj.id.split('_')[1];

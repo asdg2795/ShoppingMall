@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderDto {
+    // 제품 상세 페이지 화면에서 보내는 주문 정보 (상품, 수량)를 위한 DTO 객체 생성
     @NotNull(message = "상품 아이디는 필수 입력 값입니다.")
     private Long itemId;
 

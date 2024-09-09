@@ -15,6 +15,8 @@
 
 
         function bindDomEvent(){
+            // 상품 이미지 부분은 상품을 등록하는 경우와 상품을 수정하는 경우로 나뉨
+            // 상품 등록 페이지에서 삼품 이미지를 browse 기능을 통해 선택했을 때 (change) 수행되는 스크립트
             $(".custom-file-input").on("change", function() {
                 var fileName = $(this).val().split("\\").pop();  //이미지 파일명
                 var fileExt = fileName.substring(fileName.lastIndexOf(".")+1); // 확장자 추출
@@ -50,7 +52,7 @@
 
 <div layout:fragment="content">
     <form role="form" method="post" enctype="multipart/form-data" th:object="${ItemFormDto}">
-
+    <!-- 파일을 전송할 때는 form 태그의 enctype(인코딩 타입) 값을 "multipart/form-data" 로 설정    -->
         <p class="h2">
             상품 등록
         </p>
@@ -59,6 +61,7 @@
 
         <div class="form-group">
             <select th:field="*{itemSellStatus}" class="custom-select">
+                <!-- 상품 판매 상태를 "판매중" 또는 "품절"로 선택할 수 있게 <select> 태그 이용 -->
                 <option value="SELL">판매중</option>
                 <option value="SOLD_OUT">품절</option>
             </select>
@@ -96,6 +99,8 @@
         </div>
         <p th:if="${#fields.hasErrors('itemDetail')}" th:errors="*{itemDetail}" class="fieldError">Incorrect data</p>
 
+        <!-- 상품을 처음 등록할 경우 Controller 를 통해 전달 받은 itemFormDtoList 가 존재하지 않음 -->
+        <!-- Thymeleaf builtin 메소드 #numbers.sequence() 를 통해서 1부터 5까지 상품이미지명 출력 -->
         <div th:if="${#lists.isEmpty(ItemFormDto.itemImgDtoList)}">
             <div class="form-group" th:each="num: ${#numbers.sequence(1,5)}">
                 <div class="custom-file img-div">
@@ -105,6 +110,8 @@
             </div>
         </div>
 
+        <!-- 상품을 수정할 경우는 이미 존재하던 상품 이미지가 있으므로 itemFormDtoList 가 존재함 -->
+        <!-- 이미지가 존재하면 해당 이미지의 이름을 출력하고 빈칸이면 상품이미지 +index를 출력 -->
         <div th:if = "${not #lists.isEmpty(ItemFormDto.itemImgDtoList)}">
             <div class="form-group" th:each="itemImgDto, status: ${ItemFormDto.itemImgDtoList}">
                 <div class="custom-file img-div">
@@ -116,6 +123,8 @@
             </div>
         </div>
 
+        <!-- 상품을 처음 등록할 때는 "저장" 버튼을 출력 -->
+        <!-- 상품을 수정할 때는 "수정" 버튼을 추력 -->
         <div th:if="${#strings.isEmpty(ItemFormDto.id)}" style="text-align: center">
             <button th:formaction="@{/admin/item/new}" type="submit" style="margin-bottom: 30px;" class="btn btn-primary">저장</button>
         </div>

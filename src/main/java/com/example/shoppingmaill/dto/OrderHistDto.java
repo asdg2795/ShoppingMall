@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderHistDto {
+    // 주문 정보를 담을 OrderHistDto 객체 생성
 
     public OrderHistDto(Order order) {
         this.orderId = order.getId();
@@ -22,7 +23,7 @@ public class OrderHistDto {
     private Long orderId;
     private String orderDate;
     private OrderStatus orderStatus;
-    private List<OrderItemDto> orderItemDtoList = new ArrayList<>();
+    private List<OrderItemDto> orderItemDtoList = new ArrayList<>();// 주문 상품 정보 List
 
     public void addOrderItemDto(OrderItemDto orderItemDto){
         orderItemDtoList.add(orderItemDto);

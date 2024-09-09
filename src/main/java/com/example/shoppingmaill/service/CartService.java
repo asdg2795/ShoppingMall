@@ -63,17 +63,21 @@ public class CartService {
 
         Member member = memberRepository.findByEmail(email);
         Cart cart = cartRepository.findByMemberId(member.getId());
+        // 로그인 유저 정보 -> 유저의 cart 조회 ->
 
         if(cart == null){
             return cartDetailDtoList;
         }
 
         cartDetailDtoList = cartItemRepository.findcartDetailDtoList(cart.getId());
+        // cart 를 참조하는 CartItem 조회 (cartDetailDto 로 변환)
         return cartDetailDtoList;
     }
 
     @Transactional(readOnly = true)
     public boolean validateCartItem(Long cartItemId, String email){
+        // 현재 로그인한 유저와 해당 장바구니 상품의 저장한 유저가 같은지 검증
+
         // 현재 로그인한 유저
         Member curMember = memberRepository.findByEmail(email);
 
@@ -93,6 +97,7 @@ public class CartService {
     }
 
     public void deleteCartItem(Long cartItemId){
+        // 장바구니 상품 번호를 파라미터로 받아서 삭제하는 로직 추가
         CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
         cartItemRepository.delete(cartItem);
     }
@@ -103,8 +108,10 @@ public class CartService {
         // CartOrderDto 객체를 이용하여 cartItem 객체를 조회
         // cartItem 객체에서 itemId 와 count 값을 이용해 orderDto 객체 생성
         for (CartOrderDto cartOrderDto : cartOrderDtoList) {
+            // cartOrderDto 에 존재하는 cartItemId 를 이용하여 CartItem 객체 조회 ->
             CartItem cartItem = cartItemRepository.findById(cartOrderDto.getCartItemId()).orElseThrow(EntityNotFoundException::new);
             OrderDto orderDto = new OrderDto();
+            // cartItem 에 존재하는 ItemId 와 count 값을 얻은 뒤에 이를 이용하여 OrderDto 객체 생성 ->
             orderDto.setItemId(cartItem.getItem().getId());
             orderDto.setCount(cartItem.getCount());
             orderDtoList.add(orderDto);
@@ -114,7 +121,8 @@ public class CartService {
 
         // 주문한 장바구니 상품을 제거하는 로직
         for(CartOrderDto cartOrderDto : cartOrderDtoList) {
-            CartItem cartItem =cartItemRepository.findById(cartOrderDto.getCartItemId()).orElseThrow(EntityNotFoundException::new);
+            // OrderDtoList 를 orderService.orders() 메소드 파라미터로 넘겨 호출 ->
+            CartItem cartItem = cartItemRepository.findById(cartOrderDto.getCartItemId()).orElseThrow(EntityNotFoundException::new);
             cartItemRepository.delete(cartItem);
         }
         return orderId;

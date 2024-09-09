@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @Setter
 public class MemberFormDto {
+    // 유효성 검증
 
     @NotBlank(message = "이름은 필수 입력 값입니다.")
     private String name;

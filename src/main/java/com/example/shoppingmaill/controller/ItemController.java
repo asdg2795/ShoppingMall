@@ -7,6 +7,7 @@ import com.example.shoppingmaill.service.ItemService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.Banner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,46 +29,42 @@ public class ItemController {
     // 상품 등록 페이지 접근
     @GetMapping(value = "/admin/item/new")
     public String itemForm(Model model){
-        model.addAttribute("ItemFormDto", new ItemFormDto());
+        model.addAttribute("itemFormDto", new ItemFormDto());
         return "item/itemForm";
     }
 
-    // 상품 등록(상품 정보 및 이미지 입력하고 저장)
     @PostMapping(value = "/admin/item/new")
-    public String itemNew(@Valid @ModelAttribute("ItemFormDto") ItemFormDto itemFormDto,
-                          BindingResult bindingResult,
-                          Model model,
-                          @RequestParam(name="itemImgFile") List<MultipartFile> itemImgFileList){
-
-        if (bindingResult.hasErrors()){
+    public String itemNew(@Valid ItemFormDto itemFormDto, BindingResult bindingResult, Model model,
+                          @RequestParam(name = "itemImgFile") List<MultipartFile> itemImgFileList){
+        if(bindingResult.hasErrors()){
             return "item/itemForm";
         }
 
-        if (itemImgFileList.get(0).isEmpty() && itemFormDto.getId() == null) {
-            model.addAttribute("errorMessage",
-                    "첫번째 상품 이미지는 필수 입력 값 입니다.");
+        if(itemImgFileList.get(0).isEmpty() && itemFormDto.getId()== null){
+            model.addAttribute("errorMessage", "첫번째 상품 이미지는 필수 입력 값 입니다.");
             return "item/itemForm";
         }
 
         try{
             itemService.saveItem(itemFormDto, itemImgFileList);
-        } catch (Exception e) {
-            model.addAttribute("errorMessage",
-                    "상품 등록 중 에러가 발생하였습니다.");
+        }catch(Exception e){
+            model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
             return "item/itemForm";
         }
+
         return "redirect:/";
     }
 
     // 상품 수정
-    // 수정① "ADMIN" 권한을 가진 아이디로 상품 수정 페이지 GET 요청
+    // 수정① "ADMIN" 권한을 가진 아이디로 상품 수정 페이지 GET 요청 -> itemService.getItemDtl(itemId)
     @GetMapping(value = "/admin/item/{itemId}")
     public String itemDetail(@PathVariable(name = "itemId") Long itemId, Model model){
 
         try{
-            ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
+            ItemFormDto itemFormDto = itemService.getItemDetail(itemId);
             // 수정② 수행하여 해당 상품 조회
             model.addAttribute("ItemFormDto", itemFormDto);
+            // 해당 상품을 조회한 뒤 itemFormDto 객체를 기반으로 상품 수정 페이지 생성 및 반환
             // 수정③ 상품 수정 페이지 반환하면서 해당 상품 DTO 객체로 넘김
         } catch (EntityNotFoundException e) {
             model.addAttribute("errorMessage", "존재하지 않는 상품입니다.");
@@ -92,10 +89,12 @@ public class ItemController {
             return "item/itemForm";
         }
 
+        // 입력값을 검증하고,
+
         try {
             itemService.updateItem(itemFormDto, itemImgFileList);
-            // 수정⑤ 입력값을 검증하고 itemService.updateItem() 메소드를 수행
-            // 파라미터는 입력받은 ItemFormDto 객체와 이미지 정보를 담고있는 itemImgFileList를 넘김
+            // 수정⑤ itemService.updateItem() 메소드를 수행
+            // 파라미터는 입력받은 ItemFormDto 객체와 이미지 정보를 담고있는 itemImgFileList를 넘김 -> itemService.getItemDtl
         } catch (Exception e) {
             model.addAttribute("errorMessage", "상품 수정 중 에러가 발생하였습니다.");
             return "item/itemForm";
@@ -122,7 +121,7 @@ public class ItemController {
 
     @GetMapping(value = "/item/{itemId}")
     public String itemDetail(Model model, @PathVariable(name = "itemId") Long itemId){
-        ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
+        ItemFormDto itemFormDto = itemService.getItemDetail(itemId);
         model.addAttribute("Item", itemFormDto);
         return "item/itemDetail";
     }

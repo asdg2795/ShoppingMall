@@ -49,51 +49,34 @@ public class ItemService {
         return item.getId();
     }
 
-    // 상품 조회
     @Transactional(readOnly = true)
-    // DB에서 객체를 조회할 때, 읽기 전용 상태로 설정하는 어노테이션과 속성
-    public ItemFormDto getItemDtl(Long itemId){
-
-        // 상품 id를 기반으로 상품 이미지 엔티티 객체 가져옴
+    public ItemFormDto getItemDetail(Long itemId){
         List<ItemImg> itemImgList = itemImgRepository.findByItemIdOrderByIdAsc(itemId);
-
-        // 상품 이미지 DTO 객체 담을 그릇 생성
         List<ItemImgDto> itemImgDtoList = new ArrayList<>();
 
-        // 상품 이미지 엔티티 객체를 상품 이미지 DTO 객체를 변환
         for(ItemImg itemImg : itemImgList){
             ItemImgDto itemImgDto = ItemImgDto.of(itemImg);
             itemImgDtoList.add(itemImgDto);
         }
 
-        // 상품 id를 기반으로 상품 엔티티 객체 가져옴
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(EntityNotFoundException::new);
+        Item item = itemRepository.findById(itemId).orElseThrow(EntityNotFoundException::new);
 
-        // 상품 엔티티 객체를 상품 DTO 객체로 변환
         ItemFormDto itemFormDto = ItemFormDto.of(item);
         itemFormDto.setItemImgDtoList(itemImgDtoList);
         return itemFormDto;
-
     }
 
-    // 상품 수정
-    public Long updateItem(ItemFormDto itemFormDto,
-                           List<MultipartFile> itemImgFileList) throws Exception{
-       // 상품 수정
-       Item item = itemRepository.findById(itemFormDto.getId())
-               .orElseThrow(EntityNotFoundException::new);
-       item.updateItem(itemFormDto);
-       // 수정⑥ Item 객체를 조회하고 item.updateItem(itemFormDto) 수행
+    public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception{
+        Item item = itemRepository.findById(itemFormDto.getId()).orElseThrow(EntityNotFoundException::new);
+        item.updateItem(itemFormDto);
 
-       // 상품 이미지 수정
-       List<Long> itemImgIds = itemFormDto.getItemImgIds();
-       for(int i = 0; i < itemImgFileList.size(); i++){
-           itemImgService.updateItemImg(itemImgIds.get(i), itemImgFileList.get(i));
-           // 수정⑦ 메소드 수행, 이때) 파라미터는 "상품 이미지의 id", "상품 이미지 파일"
-       }
-       return item.getId();
+        List<Long> itemImgList = itemFormDto.getItemImgIds();
+        for(int i = 0; i<itemImgFileList.size();i++){
+            itemImgService.updateItemImg(itemImgList.get(i), itemImgFileList.get(i));
+        }
+        return item.getId();
     }
+
 
     // 조회 기능
     @Transactional(readOnly = true)

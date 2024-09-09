@@ -8,42 +8,36 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-
+// 이미지 파일 저장 로직을 담당할 Service 객체
+// 파일 저장은 DB 에 저장되는 것이 아니기 때문에 Repository 필요 없음(FileOutputStream 가 대신함)
 // 이미지 파일 업로드
 // UUID(Universally Unique IDentifier) - 서로 다른 개체들을 구별하기 위한 클래스
 // FileOutputStream 클래스를 이용하여 파일을 저장
 @Service
 @Log
 public class FileService {
-    // 상품 이미지가 존재한다면 fileService.uploadFile() 메소드 수행
-    // 이때 파라미터는 "저장위치", "원래 파일명", 이미지 Byte 파일"
-    public String uploadFile(String uploadPath, String originalFileName,
-                             byte[] fileData) throws IOException{
-        // UUID를 이용하여 파일명 새로 생성
-        // FileOutputStream을 이용하여 저장
+    public String uploadFile(String uploadPath, String originalFileName, byte[] fileData) throws Exception{
         UUID uuid = UUID.randomUUID();
         String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-        String savedFileName = uuid.toString() + extension; // 파일명
+        String savedFileName = uuid.toString() + extension;
 
-        // 경로 + 파일명
-        String fileUploadFullUrl = uploadPath + "/" + savedFileName;
+        String fileUploadFullUrl = uploadPath +"+"+ savedFileName;
 
-        // FileOutputStream 객체를 이용하여 경로지정 후 파일 저장
-        FileOutputStream fos = new FileOutputStream((fileUploadFullUrl));
+        FileOutputStream fos = new FileOutputStream(fileUploadFullUrl);
         fos.write(fileData);
         fos.close();
 
         return savedFileName;
     }
 
-    public void deleteFile(String filePath){
-        File deleteFile = new File(filePath);
+    public void deleteFile(String fileData) throws Exception{
+        File deleteFile = new File(fileData);
 
-        if(deleteFile.exists()) {
+        if(deleteFile.exists()){
             deleteFile.delete();
             log.info("파일을 삭제하였습니다.");
-        } else {
-            log.info("파일을 존재하지 않습니다.");
+        }else{
+            log.info("파일이 존재하지 않습니다.");
         }
     }
 }

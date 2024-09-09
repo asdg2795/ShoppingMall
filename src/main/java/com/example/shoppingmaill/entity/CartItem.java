@@ -27,6 +27,7 @@ public class CartItem extends BaseEntity{
 
     private int count;
 
+    // 장바구니에 담을 객체를 생성하는 메소드 추가
     public static CartItem createCartItem(Cart cart, Item item, int count){
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
@@ -35,10 +36,12 @@ public class CartItem extends BaseEntity{
         return cartItem;
     }
 
+    // 장바구니에 담겨 있는 상품을 또 장바구니로 담았을 경우 수량을 증가시키는 메소드 추가
     public void addCount(int count) {
         this.count += count;
     }
 
+    // 수량 변경을 위한 메소드 추가
     public void updateCount(int count){
         this.count = count;
     }
